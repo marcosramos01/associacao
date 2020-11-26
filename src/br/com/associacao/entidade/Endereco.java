@@ -11,8 +11,8 @@ import java.io.Serializable;
  *
  * @author Admin
  */
-public class Endereco implements Serializable{
-   
+public class Endereco implements Serializable {
+
     private Integer id;
     private String logradouro;
     private String numero;
@@ -90,9 +90,4 @@ public class Endereco implements Serializable{
         this.cep = cep;
     }
 
-    public String getLogradouro(String logradouro) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-   
 }

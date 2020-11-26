@@ -40,4 +40,6 @@ public class Cliente extends Pessoa implements Serializable{
     public void setEndereco(Endereco endereco) {
         this.endereco = endereco;
     }
+
+   
 }

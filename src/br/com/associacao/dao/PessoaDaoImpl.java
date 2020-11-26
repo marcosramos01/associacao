@@ -5,7 +5,6 @@
  */
 package br.com.associacao.dao;
 
-import br.com.associacao.entidade.Cliente;
 import br.com.associacao.entidade.Pessoa;
 import java.io.Serializable;
 import java.sql.Connection;
@@ -19,7 +18,7 @@ public class PessoaDaoImpl implements Serializable {
     protected Connection conexao;
     protected PreparedStatement preparando;
     protected ResultSet resultSet;
-    
+
     public void salvar(Pessoa pessoa) throws SQLException {
         String sql = "INSERT INTO pessoa(nome, email, telefone) "
                 + "VALUES(?, ?, ?)";
@@ -33,10 +32,22 @@ public class PessoaDaoImpl implements Serializable {
             resultSet = preparando.getGeneratedKeys(); //utilizar quando usar outra tabela para pegar a chave primaria
             resultSet.next(); //acessar resultset para verificar se tem registro
             pessoa.setId(resultSet.getInt(1)); //retorna o primeiro valor de resultset
-            
+
         } catch (SQLException eSQL) {
             System.err.println("Erro ao salvar pessoa " + eSQL.getMessage());
-        } 
+        }
     }
 
+    public void excluir(Integer id) throws SQLException {
+        try {
+            conexao = FabricaConexao.abrirConexao();
+            preparando = conexao.prepareStatement("DELETE FROM pessoa WHERE id = ?");
+            preparando.setInt(1, id);
+            preparando.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Erro ao excluir " + e.getMessage());
+        } finally {
+            FabricaConexao.fecharConexao(conexao, preparando);
+        }
+    }
 }
