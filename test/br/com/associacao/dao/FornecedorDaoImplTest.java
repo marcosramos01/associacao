@@ -25,7 +25,7 @@ public class FornecedorDaoImplTest {
         fornecedorDaoImpl = new FornecedorDaoImpl();
     }
 
-//    @Test
+    @Test
     public void testSalvar() throws Exception {
         System.out.println("salvar");
         
@@ -36,7 +36,7 @@ public class FornecedorDaoImplTest {
                 UtilGerador.gerarEmail(),
                 UtilGerador.gerarTelefoneFixo());
         
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 2; i++) {
             enderecos.add(gerarEndereco());
         }
         

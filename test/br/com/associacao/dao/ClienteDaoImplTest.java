@@ -24,7 +24,7 @@ public class ClienteDaoImplTest {
         clienteDaoImpl = new ClienteDaoImpl();
     }
 
-//    @Test
+    @Test
     public void testSalvarCliente() throws Exception {
         System.out.println("salvar");
         cliente = new Cliente(null, UtilGerador.gerarCaracter(10), UtilGerador.gerarEmail(),

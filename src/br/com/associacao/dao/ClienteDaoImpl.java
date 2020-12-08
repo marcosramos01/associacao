@@ -32,7 +32,7 @@ public class ClienteDaoImpl extends PessoaDaoImpl implements Serializable {
             preparando.executeUpdate();
             
             EnderecoDaoImpl enderecoDaoImpl = new EnderecoDaoImpl();
-            enderecoDaoImpl.salvarEnderecoFuncionario(cliente.getEndereco(), cliente.getId(), conexao);
+            enderecoDaoImpl.salvarEnderecoCliente(cliente.getEndereco(), cliente.getId(), conexao);
             
         } catch (SQLException eSQL) {
             System.err.println("Erro ao salvar cliente " + eSQL.getMessage());
