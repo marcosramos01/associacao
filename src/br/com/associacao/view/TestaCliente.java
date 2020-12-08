@@ -7,9 +7,7 @@ package br.com.associacao.view;
 
 import br.com.associacao.controle.ClienteControle;
 import br.com.associacao.entidade.Cliente;
-import br.com.associacao.entidade.Endereco;
 import br.com.utilitario.UtilGerador;
-import java.awt.SystemColor;
 import java.util.List;
 import javax.swing.JOptionPane;
 

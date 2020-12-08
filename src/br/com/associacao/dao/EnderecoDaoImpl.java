@@ -20,17 +20,26 @@ public class EnderecoDaoImpl implements Serializable {
     private PreparedStatement preparando;
 
     public void salvarEnderecoCliente(Endereco endereco, int idEstrangeiro, Connection conexao) throws SQLException {
-        String sql = "INSERT INTO endereco(logradouro, numero, bairro, cidade, estado, cep, idCliente) VALUES(?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO endereco(logradouro, numero, bairro, cidade, estado, cep, idCliente) "
+                + "VALUES(?, ?, ?, ?, ?, ?, ?)";
+
+        salvar(conexao, sql, endereco, idEstrangeiro);
+    }
+
+    public void salvarEnderecoFuncionario(Endereco endereco, int idEstrangeiro, Connection conexao) throws SQLException {
+        String sql = "INSERT INTO endereco(logradouro, numero, bairro, cidade, estado, cep, idFuncionario)"
+                + " VALUES(?, ?, ?, ?, ?, ?, ?)";
 
         salvar(conexao, sql, endereco, idEstrangeiro);
     }
 
     public void salvarEnderecoFornecedor(Endereco endereco, int idEstrangeiro, Connection conexao) throws SQLException {
-        String sql = "INSERT INTO endereco(logradouro, numero, bairro, cidade, estado, cep, idFornecedor) VALUES(?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO endereco(logradouro, numero, bairro, cidade, estado, cep, idFornecedor) "
+                + "VALUES(?, ?, ?, ?, ?, ?, ?)";
 
         salvar(conexao, sql, endereco, idEstrangeiro);
     }
-    
+
     private void salvar(Connection conexao, String sql, Endereco endereco, int idEstrangeiro) throws SQLException {
         try {
             preparando = conexao.prepareStatement(sql);
@@ -45,7 +54,7 @@ public class EnderecoDaoImpl implements Serializable {
         } catch (SQLException eSQL) {
             System.err.println("Erro ao salvar endereço " + eSQL.getMessage());
             conexao.rollback();
-        } 
+        }
     }
 
     public void alterar(Endereco endereco, int idEstrangeiro, Connection conexao) throws SQLException {
@@ -65,12 +74,12 @@ public class EnderecoDaoImpl implements Serializable {
         } catch (SQLException e) {
             System.err.println("Erro ao alterar " + e.getMessage());
             conexao.rollback();
-        } 
+        }
     }
 
     public void alterarEndereco(Endereco endereco, Connection conexao) {
         String sql = "UPDATE endereco SET logradouro = ?, numero = ?, bairro = ?, cidade = ?, estado = ?, cep = ? WHERE id = ?";
-         try {
+        try {
             preparando = conexao.prepareStatement(sql);
             preparando.setString(1, endereco.getLogradouro());
             preparando.setString(2, endereco.getNumero());
@@ -83,6 +92,7 @@ public class EnderecoDaoImpl implements Serializable {
 
         } catch (SQLException e) {
             System.err.println("Erro ao alterar " + e.getMessage());
-        } 
+        }
     }
+
 }

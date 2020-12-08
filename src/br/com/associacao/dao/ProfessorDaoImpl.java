@@ -6,6 +6,7 @@
 package br.com.associacao.dao;
 
 import br.com.associacao.entidade.Professor;
+import br.com.associacao.entidade.Telefone;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,7 +18,7 @@ import java.util.List;
 
 /**
  *
- * @author HP
+ * @marcos
  */
 public class ProfessorDaoImpl implements Serializable {
 
@@ -30,15 +31,14 @@ public class ProfessorDaoImpl implements Serializable {
 
         try {
             conexao = FabricaConexao.abrirConexao();
-            //preparando = conexao.prepareStatement(sql); padrão usado
-            preparando = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS); //utiliza quando usar outra tabela para gerar o id quando salvar
+            preparando = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             preparando.setString(1, professor.getNome());
             preparando.setString(2, professor.getCpf());
             preparando.setString(3, professor.getNumeroCracha());
             preparando.executeUpdate();
-            resultSet = preparando.getGeneratedKeys(); //utilizar quando usar outra tabela para pegar a chave primaria
-            resultSet.next(); //acessar resultset para verificar se tem registro
-            professor.setId(resultSet.getInt(1)); //retorna o primeiro valor de resultset
+            resultSet = preparando.getGeneratedKeys();
+            resultSet.next();
+            professor.setId(resultSet.getInt(1));
 
             TelefoneDaoImpl telefoneDaoImpl = new TelefoneDaoImpl();
             telefoneDaoImpl.salvarTelefoneProfessor(professor.getTelefones(), professor.getId(), conexao);
@@ -49,6 +49,7 @@ public class ProfessorDaoImpl implements Serializable {
             FabricaConexao.fecharConexao(conexao, preparando, resultSet);
         }
     }
+
     public void alterar(Professor professor) throws SQLException {
         String sql = "UPDATE professor SET nome = ?, cpf = ?, numeroCracha = ? WHERE id = ?";
 
@@ -84,19 +85,32 @@ public class ProfessorDaoImpl implements Serializable {
 
     public Professor pesquisarPorId(Integer id) throws SQLException {
         Professor professor = null;
-        String consulta = "SELECT * FROM professor  WHERE id = ?";
-
+        String consulta = "SELECT * FROM professor p "
+                + "INNER JOIN telefone t on t.idProfessor = p.id "
+                + " WHERE p.id = ?";
+        List<Telefone> telefones;
+        Telefone telefone;
         try {
             conexao = FabricaConexao.abrirConexao();
             preparando = conexao.prepareStatement(consulta);
             preparando.setInt(1, id);
             resultSet = preparando.executeQuery();
             if (resultSet.next()) {
+                telefones = new ArrayList<>();
                 professor = new Professor();
                 professor.setId(id);
                 professor.setNome(resultSet.getString("nome"));
                 professor.setCpf(resultSet.getString("cpf"));
                 professor.setNumeroCracha(resultSet.getString("numeroCracha"));
+                do {
+                    telefone = new Telefone();
+                    telefone.setId(resultSet.getInt("t.id"));
+                    telefone.setNumero(resultSet.getString("numero"));
+                    telefone.setOperadora(resultSet.getString("operadora"));
+                    telefone.setTipo(resultSet.getString("tipo"));
+                    telefones.add(telefone);
+                } while (resultSet.next());
+                professor.setTelefones(telefones);
             }
 
         } catch (SQLException e) {
@@ -109,7 +123,9 @@ public class ProfessorDaoImpl implements Serializable {
     }
 
     public List<Professor> pesquisarPorNome(String nome) throws SQLException {
-        String consulta = "SELECT * FROM cliente  WHERE nome LIKE ?";
+        String consulta = "SELECT * FROM professor p "
+                + "INNER JOIN telefone t ON t.idProfessor = p.id "
+                + " WHERE p.nome LIKE ?";
         Professor professor;
         List<Professor> professores = new ArrayList<>();
         try {
@@ -117,14 +133,33 @@ public class ProfessorDaoImpl implements Serializable {
             preparando = conexao.prepareStatement(consulta);
             preparando.setString(1, "%" + nome + "%");
             resultSet = preparando.executeQuery();
+            int idProfessor;
+            int idAntigo = 0;
+            Telefone telefone;
+            List<Telefone> telefones = null;
             while (resultSet.next()) {
-                professor = new Professor();
-                professor.setId(resultSet.getInt("id"));
-                professor.setNome(resultSet.getString("nome"));
-                professor.setCpf(resultSet.getString("cpf"));
-                professor.setNumeroCracha(resultSet.getString("numeroCracha"));
-                professores.add(professor);
+                idProfessor = resultSet.getInt("id");
+                if (idProfessor != idAntigo) {
+                    telefones = new ArrayList<>();
+                    professor = new Professor();
+                    professor.setId(idProfessor);
+                    professor = new Professor();
+                    professor.setId(idProfessor);
+                    professor.setNome(resultSet.getString("nome"));
+                    professor.setCpf(resultSet.getString("cpf"));
+                    professor.setNumeroCracha(resultSet.getString("numeroCracha"));
+                    professor.setTelefones(telefones);
+                    professores.add(professor);
+                    idAntigo = idProfessor;
+                }
+                telefone = new Telefone();
+                telefone.setId(resultSet.getInt("t.id"));
+                telefone.setNumero(resultSet.getString("numero"));
+                telefone.setOperadora(resultSet.getString("operadora"));
+                telefone.setTipo(resultSet.getString("tipo"));
+                telefones.add(telefone);
             }
+
         } catch (SQLException e) {
             System.err.println("Erro ao pesquisar por nome +" + e.getMessage());
         } finally {

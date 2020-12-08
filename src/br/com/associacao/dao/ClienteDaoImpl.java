@@ -30,8 +30,10 @@ public class ClienteDaoImpl extends PessoaDaoImpl implements Serializable {
             preparando.setDouble(1, cliente.getSalario());
             preparando.setInt(2, cliente.getId());
             preparando.executeUpdate();
+            
             EnderecoDaoImpl enderecoDaoImpl = new EnderecoDaoImpl();
-            enderecoDaoImpl.salvarEnderecoCliente(cliente.getEndereco(), cliente.getId(), conexao);
+            enderecoDaoImpl.salvarEnderecoFuncionario(cliente.getEndereco(), cliente.getId(), conexao);
+            
         } catch (SQLException eSQL) {
             System.err.println("Erro ao salvar cliente " + eSQL.getMessage());
         } finally {
@@ -40,24 +42,18 @@ public class ClienteDaoImpl extends PessoaDaoImpl implements Serializable {
     }
 
     public void alterar(Cliente cliente) throws SQLException {
-        String sql = "UPDATE cliente SET nome = ?, email = ?, telefone = ?, salario = ? WHERE id = ?";
-
+        super.alterar(cliente);
+        String sql = "UPDATE cliente SET salario = ? WHERE idPessoa = ?";
         try {
-            conexao = FabricaConexao.abrirConexao();
             preparando = conexao.prepareStatement(sql);
-            preparando.setString(1, cliente.getNome());
-            preparando.setString(2, cliente.getEmail());
-            preparando.setString(3, cliente.getTelefone());
-            preparando.setDouble(4, cliente.getSalario());
-            preparando.setInt(5, cliente.getId());
+            preparando.setDouble(1, cliente.getSalario());
+            preparando.setInt(2, cliente.getId());
             preparando.executeUpdate();
-
+            
             EnderecoDaoImpl enderecoDaoImpl = new EnderecoDaoImpl();
             enderecoDaoImpl.alterarEndereco(cliente.getEndereco(), conexao);
-
         } catch (SQLException e) {
             System.err.println("Erro ao alterar " + e.getMessage());
-
         } finally {
             FabricaConexao.fecharConexao(conexao, preparando);
         }

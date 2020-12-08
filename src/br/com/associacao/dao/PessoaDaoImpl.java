@@ -38,6 +38,23 @@ public class PessoaDaoImpl implements Serializable {
         }
     }
 
+    public void alterar(Pessoa pessoa) throws SQLException {
+        String sql = "UPDATE pessoa SET nome = ?, email = ?, telefone = ? WHERE id = ?";
+
+        try {
+            conexao = FabricaConexao.abrirConexao();
+            preparando = conexao.prepareStatement(sql);
+            preparando.setString(1, pessoa.getNome());
+            preparando.setString(2, pessoa.getEmail());
+            preparando.setString(3, pessoa.getTelefone());
+            preparando.setDouble(4, pessoa.getId());
+            preparando.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao alterar pessoa " + e.getMessage());
+        }
+    }
+
     public void excluir(Integer id) throws SQLException {
         try {
             conexao = FabricaConexao.abrirConexao();

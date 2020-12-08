@@ -39,13 +39,15 @@ public class ClienteDaoImplTest {
         clienteDaoImpl.salvar(cliente);
     }
 
-//    @org.junit.Test
+//    @Test
     public void testAlterar() throws Exception {
         System.out.println("alterar");
 
-        cliente = clienteDaoImpl.pesquisarPorId(11);
-        cliente.setNome("aaa" + UtilGerador.gerarNome());
+        cliente = clienteDaoImpl.pesquisarPorId(1);
+        cliente.setNome("Marcos Aurelio" + UtilGerador.gerarNome());
+        cliente.setSalario(Double.parseDouble(UtilGerador.gerarNumero(4)));
         cliente.getEndereco().setLogradouro("log alterado");
+        cliente.getEndereco().setCidade(UtilGerador.gerarCidade());
 
         clienteDaoImpl.alterar(cliente);
     }
@@ -59,7 +61,7 @@ public class ClienteDaoImplTest {
 //    @Test
     public void testPesquisarPorId() throws Exception {
         System.out.println("pesquisar Por Id");
-        cliente = clienteDaoImpl.pesquisarPorId(1);
+        cliente = clienteDaoImpl.pesquisarPorId(12);
         System.out.println("id: " + cliente.getId());
         System.out.println("nome: " + cliente.getNome());
         System.out.println("email: " + cliente.getEmail());
@@ -73,7 +75,7 @@ public class ClienteDaoImplTest {
         System.out.println("CEP: " + cliente.getEndereco().getCep());
     }
 
-    @Test
+//    @Test
     public void testPesquisarPorNome() throws Exception {
         System.out.println("pesquisar Por Nome");
         List<Cliente> clientes = clienteDaoImpl.pesquisarPorNome("silva");
