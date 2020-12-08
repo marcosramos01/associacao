@@ -30,7 +30,6 @@ public class ClienteDaoImpl extends PessoaDaoImpl implements Serializable {
             preparando.setDouble(1, cliente.getSalario());
             preparando.setInt(2, cliente.getId());
             preparando.executeUpdate();
-            
             EnderecoDaoImpl enderecoDaoImpl = new EnderecoDaoImpl();
             enderecoDaoImpl.salvarEnderecoCliente(cliente.getEndereco(), cliente.getId(), conexao);
             
